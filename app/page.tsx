@@ -36,7 +36,7 @@ function HomeContent() {
   const [bitcoinPrice, setBitcoinPrice] = useState(0);
   const previousPriceRef = useRef(0);
   const [priceDirection, setPriceDirection] = useState<string | null>(null);
-  const [holding] = useState(8692);
+  const [holding] = useState(3.23127111); // Our demo UTXOs total
   const [holdingValue, setHoldingValue] = useState(0);
   
   // Calculate display length based on holding value
@@ -46,7 +46,7 @@ function HomeContent() {
   
   const displayLength = getDisplayLength(holdingValue);
   const [currentRowIndex, setCurrentRowIndex] = useState(-1);
-  const [ticker, setTicker] = useState(searchParams.get("ticker") || "XYZ");
+  const [ticker, setTicker] = useState(searchParams.get("ticker") || "NANO STRATEGY");
   const [inputError, setInputError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(20);
@@ -70,7 +70,7 @@ function HomeContent() {
         priceDirection ? ` ${priceDirection}` : ""
       }`;
 
-  const holdingDisplay = error ? "Error" : `${holding.toLocaleString("en-US")}`;
+  const holdingDisplay = error ? "Error" : `${holding.toLocaleString("en-US", { minimumFractionDigits: 8, maximumFractionDigits: 8 })}`;
   const holdingValueDisplay = error ? "Error" : formatCurrency(holdingValue);
 
   // Define the final board rows
@@ -86,6 +86,8 @@ function HomeContent() {
       { value: " BTC PRICE", length: displayLength },
       { value: ` ${displayValue}`, length: displayLength },
       { value: "", length: displayLength },
+      { value: " ZKPOOR: CRYPTOGRAPHIC PROOF", length: displayLength },
+      { value: " WITHOUT REVEALING ADDRESSES", length: displayLength },
     ],
     [ticker, holdingValueDisplay, holdingDisplay, displayValue, displayLength]
   );
@@ -204,9 +206,34 @@ function HomeContent() {
         <SolariBoard rows={currentBoardRows} className="relative" />
       </div>
 
-      <div className="flex flex-rows w-full justify-center opacity-0 transition-opacity duration-300 animate-fadeIn">
-        {/* Status indicator */}
-        <div className="flex items-center justify-center gap-2 text-zinc-400 mt-2 sm:mt-4">
+      {/* zkpoor Actions - Clean Integration */}
+      <div className="flex flex-col items-center mt-6 space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+          <button 
+            className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3 px-6 rounded transition-colors border border-zinc-600 hover:border-zinc-500"
+            onClick={() => router.push('/treasury-manager')}
+          >
+            🔐 GENERATE PROOF
+            <div className="text-xs mt-1 opacity-80 text-zinc-300">Treasury Manager Portal</div>
+          </button>
+          <button 
+            className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3 px-6 rounded transition-colors border border-zinc-600 hover:border-zinc-500"
+            onClick={() => router.push('/verify')}
+          >
+            ✅ VERIFY PROOF
+            <div className="text-xs mt-1 opacity-80 text-zinc-300">Public Verification</div>
+          </button>
+        </div>
+        
+        <div className="text-center text-zinc-400 text-sm max-w-lg">
+          <p className="mb-2">🔍 <strong className="text-white">zkPoor</strong>: Prove Bitcoin holdings without revealing addresses or UTXOs</p>
+          <p className="text-xs text-zinc-500">Using STARK proofs for cryptographic verification with mathematical certainty</p>
+        </div>
+      </div>
+
+      {/* Status indicator */}
+      <div className="flex w-full justify-center mt-4">
+        <div className="flex items-center justify-center gap-2 text-zinc-400">
           <div
             className={`w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full ${
               isFetching

@@ -1,5 +1,7 @@
 # zkpoor (Zero Knowledge Proof Of Outstanding Reserves)
 
+[Live demo](https://zkpoor.starkwarebitcoin.dev) - [Slides](https://zkpoor-slides.starkwarebitcoin.dev)
+
 **zkpoor** enables companies to prove their Bitcoin holdings cryptographically without revealing addresses or UTXOs, using STARK proofs.
 
 Built on top of the [Bitcoin Treasury](https://github.com/block/bitcoin-treasury) foundation, zkpoor extends the original dashboard with zero-knowledge proof generation and verification capabilities.
