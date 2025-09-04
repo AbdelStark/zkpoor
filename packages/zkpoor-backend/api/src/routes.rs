@@ -4,7 +4,7 @@ use axum::{
 };
 use tower_http::cors::{CorsLayer, Any};
 
-use crate::handlers::{prove_handler, get_proof_handler, verify_proof_handler, health_handler};
+use crate::handlers::{prove_handler, get_proof_handler, verify_proof_handler, verify_hardcoded_proof_handler, health_handler};
 
 pub fn create_routes() -> Router {
     Router::new()
@@ -19,6 +19,9 @@ pub fn create_routes() -> Router {
         
         // Verify proof
         .route("/proof-verify", post(verify_proof_handler))
+        
+        // Verify hardcoded proof from JSON file
+        .route("/verify-hardcoded-proof", get(verify_hardcoded_proof_handler))
         
         // CORS layer to allow frontend to call API
         .layer(

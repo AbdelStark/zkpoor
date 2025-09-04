@@ -152,6 +152,59 @@ pub async fn verify_proof_handler(
     }
 }
 
+/// GET /verify-hardcoded-proof - Verify a hardcoded proof from JSON file
+pub async fn verify_hardcoded_proof_handler() -> Result<Json<VerifyResponse>, (StatusCode, Json<ApiError>)> {
+    tracing::info!("Received hardcoded proof verification request");
+    
+    // Load and parse the hardcoded proof from the JSON file
+    // Try multiple potential paths since the working directory could vary
+    let possible_paths = [
+        "../../proof.json",      // from packages/zkpoor-backend/
+        "../../../proof.json",   // from packages/zkpoor-backend/api/ 
+        "proof.json",            // if running from root
+        "../proof.json",         // if running from packages/
+    ];
+    
+    let mut proof_content = String::new();
+    let mut found_path = None;
+    
+    for path in &possible_paths {
+        match std::fs::read_to_string(path) {
+            Ok(content) => {
+                proof_content = content;
+                found_path = Some(path);
+                break;
+            }
+            Err(_) => continue, // Try next path
+        }
+    }
+    match found_path {
+        Some(path) => {
+            // For now, we'll just return a fake success verification
+            // without actually parsing the complex proof structure
+            tracing::info!("Successfully loaded proof.json file from {} ({} bytes)", path, proof_content.len());
+            
+            // Return fake success response
+            Ok(Json(VerifyResponse {
+                is_valid: true,
+                total_amount: Some(325906414), // Demo amount in satoshis (~3.26 BTC)
+                verified_at: Utc::now(),
+                message: "Hardcoded proof verification successful - this is a demo response".to_string(),
+            }))
+        }
+        None => {
+            tracing::error!("Failed to find proof.json file at any of the expected paths");
+            Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ApiError {
+                    error: "Failed to load hardcoded proof".to_string(),
+                    details: Some("Could not find proof.json at any of the expected paths".to_string()),
+                }),
+            ))
+        }
+    }
+}
+
 /// GET /health - Health check endpoint
 pub async fn health_handler() -> Json<HashMap<String, String>> {
     let mut response = HashMap::new();

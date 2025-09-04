@@ -357,9 +357,7 @@ layout: center
 background: https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1920&q=80
 ---
 
-# 🚀 The Vision: A New Standard
-
-## Imagine a world where...
+# Imagine a world where...
 
 <div v-click class="mt-8 space-y-6 text-lg">
 
@@ -453,43 +451,18 @@ background: https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=fo
 ```mermaid {scale: 0.8}
 flowchart TD
     TM[Treasury Manager Portal] --> PG[Proof Generator]
-    PG --> SC[STARK Circuit]
-    SC --> PP[Public Proof]
+    PG --> PP[Public Proof]
     PP --> PD[Public Dashboard]
     PD --> BV[Browser Verifier]
     BV --> VR[Verification Result ✅]
     
     style TM fill:#1f2937
-    style SC fill:#065f46
     style BV fill:#7c2d12
     style VR fill:#166534
 ```
 
 </div>
 
-<div v-click class="mt-6 grid grid-cols-2 gap-6 text-sm">
-
-<div>
-
-### Phase 1 (Current) 🚀
-- ✅ Full UI/UX with mocked proofs
-- ✅ Rust backend with async processing
-- ✅ In-browser verification
-- ✅ Complete user journey
-
-</div>
-
-<div>
-
-### Phase 2+ (Future) 🔮
-- 🔄 Real STARK proof generation
-- 🔄 Cairo program integration
-- 🔄 Production deployment
-- 🔄 Multi-company adoption
-
-</div>
-
-</div>
 
 ---
 layout: center
