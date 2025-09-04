@@ -508,9 +508,7 @@ background: https://images.unsplash.com/photo-1640340434855-6084b1f4901c?auto=fo
 
 <div class="text-center mt-8">
 
-<div class="text-6xl mb-8">🔐</div>
-
-<div class="text-4xl mb-6">**zkpoor**</div>
+<div class="text-2xl mb-6">**zkpoor**</div>
 
 <div class="text-xl mb-8 italic">
 *Zero Knowledge Proof Of Outstanding Reserves*
@@ -522,8 +520,8 @@ background: https://images.unsplash.com/photo-1640340434855-6084b1f4901c?auto=fo
 
 ### 🚀 What We Built:
 - UI/UX with Bitcoin Treasury fork
-- Cairo program for the verification of unspent UTXOs (without ownership proof)
-- Rust backend with async proof generation
+- Cairo program for verifiying UTXOs (without ownership proof)
+- Rust backend with proof generation
 - In-browser STARK verification (almost)
 
 </div>
