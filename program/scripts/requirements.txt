@@ -1,0 +1,11 @@
+requests==2.32.3
+black==24.8.0
+flake8==7.1.1
+flake8-black==0.3.6
+poseidon_py==0.1.5
+tqdm==4.66.5
+google-cloud-storage==2.18.2
+google-api-python-client==2.149.0
+colorlog==6.8.2
+cairo-lang==0.13.5
+python-json-logger==2.0.7
