@@ -25,11 +25,13 @@ class UTXOFinder {
     constructor() {
         this.baseURL = 'mempool.space';
         this.minBlockHeight = 913139;
-        this.minAmount = 0.001; // 0.001 BTC minimum (100k sats)
-        this.targetCount = 3;
+        this.minAmount = 0.01; // 0.01 BTC minimum (1M sats) - higher for larger UTXOs
+        this.targetCount = 5; // Allow up to 5 UTXOs
+        this.targetTotalBTC = 1.0; // Target > 1 BTC total
         this.foundUTXOs = [];
         this.checkedAddresses = new Set();
-        this.requestDelay = 1000; // 1 second between requests to be nice to API
+        this.requestDelay = 800; // Slightly faster to cover more ground
+        this.maxBlocksToSearch = 200; // Search more blocks for bigger UTXOs
     }
 
     async sleep(ms) {
@@ -188,7 +190,14 @@ class UTXOFinder {
             const txids = await this.getBlockTransactions(blockHash);
             console.log(`📦 Found ${txids.length} transactions in block ${blockHeight}`);
 
-            for (let j = 0; j < Math.min(txids.length, 10); j++) { // Limit to 10 transactions per block
+            // Check current total
+            const currentTotal = this.foundUTXOs.reduce((sum, utxo) => sum + utxo.btcAmount, 0);
+            if (currentTotal >= this.targetTotalBTC) {
+                console.log(`🎯 Target reached! Current total: ${currentTotal.toFixed(8)} BTC`);
+                return;
+            }
+
+            for (let j = 0; j < Math.min(txids.length, 15); j++) { // Increased to 15 transactions per block
                 if (this.foundUTXOs.length >= this.targetCount) break;
 
                 const tx = await this.getTransaction(txids[j]);
@@ -196,8 +205,9 @@ class UTXOFinder {
 
                 const utxos = await this.analyzeTransaction(tx);
                 for (const utxo of utxos) {
-                    console.log(`✅ Found UTXO: ${utxo.btcAmount.toFixed(8)} BTC at ${utxo.address}`);
                     this.foundUTXOs.push(utxo);
+                    const currentTotal = this.foundUTXOs.reduce((sum, u) => sum + u.btcAmount, 0);
+                    console.log(`✅ Found UTXO: ${utxo.btcAmount.toFixed(8)} BTC at ${utxo.address.slice(0, 10)}... (Total: ${currentTotal.toFixed(8)} BTC)`);
                     
                     if (this.foundUTXOs.length >= this.targetCount) break;
                 }
@@ -211,17 +221,28 @@ class UTXOFinder {
     }
 
     async findDemoUTXOs() {
-        console.log('🚀 Starting UTXO search for zkpoor demo...');
-        console.log(`📋 Criteria: P2PKH addresses, min ${this.minAmount} BTC, after block ${this.minBlockHeight}`);
+        console.log('🚀 Starting ENHANCED UTXO search for zkpoor demo...');
+        console.log(`📋 Enhanced Criteria: P2PKH addresses, min ${this.minAmount} BTC each, target total > ${this.targetTotalBTC} BTC`);
+        console.log(`🎯 Will find up to ${this.targetCount} UTXOs, searching up to ${this.maxBlocksToSearch} recent blocks`);
         
         try {
             const currentHeight = await this.getCurrentBlockHeight();
             
-            // Search recent blocks starting from a reasonable point
-            const startHeight = Math.max(this.minBlockHeight, currentHeight - 100);
-            console.log(`🎯 Searching blocks from ${startHeight} to ${currentHeight}`);
+            // Search more blocks for bigger UTXOs  
+            const startHeight = Math.max(this.minBlockHeight, currentHeight - this.maxBlocksToSearch);
+            console.log(`🎯 Searching blocks from ${startHeight} to ${currentHeight} (${currentHeight - startHeight + 1} blocks)`);
+            console.log(`💰 Looking for UTXOs totaling > ${this.targetTotalBTC} BTC with individual amounts > ${this.minAmount} BTC`);
 
-            for (let height = currentHeight; height >= startHeight && this.foundUTXOs.length < this.targetCount; height -= 1) {
+            for (let height = currentHeight; height >= startHeight; height -= 1) {
+                const currentTotal = this.foundUTXOs.reduce((sum, utxo) => sum + utxo.btcAmount, 0);
+                
+                // Stop if we have enough UTXOs and total > target
+                if (this.foundUTXOs.length >= this.targetCount && currentTotal >= this.targetTotalBTC) {
+                    console.log(`🎯 Success! Found ${this.foundUTXOs.length} UTXOs totaling ${currentTotal.toFixed(8)} BTC`);
+                    break;
+                }
+                
+                // Continue if we haven't hit either limit yet
                 await this.searchBlockForUTXOs(height);
                 
                 // Add delay between blocks to be respectful to the API
