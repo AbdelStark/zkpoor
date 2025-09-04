@@ -521,10 +521,10 @@ background: https://images.unsplash.com/photo-1640340434855-6084b1f4901c?auto=fo
 <div>
 
 ### 🚀 What We Built:
-- Complete UI/UX with Bitcoin Treasury fork
+- UI/UX with Bitcoin Treasury fork
+- Cairo program for the verification of unspent UTXOs (without ownership proof)
 - Rust backend with async proof generation
-- In-browser STARK verification
-- End-to-end user journey
+- In-browser STARK verification (almost)
 
 </div>
 
