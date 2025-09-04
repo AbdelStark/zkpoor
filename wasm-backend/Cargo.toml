@@ -1,0 +1,53 @@
+[package]
+name = "zkpoor-wasm-backend"
+version = "0.1.0"
+authors = ["Bartosz Nowak <bartekn337@gmail.com>", "@AbdelStark"]
+edition = "2021"
+resolver = "2"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook", "full"]
+full = ["cairo-vm", "stwo_cairo_prover", "stwo_cairo_utils"]
+wasm = []
+
+[dependencies]
+cairo-vm = { git = "https://github.com/lambdaclass/cairo-vm", rev = "83bfdcf", features = [
+    "mod_builtin",
+], default-features = false, optional = true }
+hex = "0.4.3"
+js-sys = "0.3.69"
+serde = "1.0.134"
+serde_json = "1.0.134"
+serde-wasm-bindgen = "0.6.5"
+stwo_cairo_prover = { git = "https://github.com/starkware-libs/stwo-cairo.git", rev = "bbe3e469bc636b89c37cb385854447bd46277b3b", default-features = false, optional = true }
+stwo_cairo_utils = { git = "https://github.com/starkware-libs/stwo-cairo.git", rev = "bbe3e469bc636b89c37cb385854447bd46277b3b", default-features = false, optional = true }
+thiserror-no-std = "2.0.2"
+wasm-bindgen = "0.2.84"
+zip = { version = "2.2.2", features = ["deflate"], default-features = false }
+bincode = "2.0.1"
+
+# The `console_error_panic_hook` crate provides better debugging of panics by
+# logging them with `console.error`. This is great for development, but requires
+# all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
+# code size when deploying.
+console_error_panic_hook = { version = "0.1.7", optional = true }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.34"
+
+[profile.release]
+# Tell `rustc` to optimize for small code size.
+opt-level = 3
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = ['-O1']
+
+# Target-specific dependencies to avoid sonic-rs on WASM
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+# Override any sonic-rs usage with serde_json for WASM
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+# Allow sonic-rs on non-WASM targets
