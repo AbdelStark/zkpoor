@@ -108,30 +108,7 @@ yarn start
 
 To stop either the development or production server, press `Ctrl+C` in the terminal where the server is running.
 
-## 📋 Features
-
-### Current (Phase 1)
-- ✅ Enhanced public dashboard with original Bitcoin Treasury functionality
-- ✅ Mock proof generation and verification UI
-- ✅ Treasury manager portal with authentication
-- ✅ UTXO input forms and validation
-- ✅ In-browser proof verification (mocked)
-
-### Planned (Future Phases)
-- 🔄 Real STARK proof generation backend
-- 🔄 Cairo program implementation
-- 🔄 Cryptographic UTXO ownership verification
-- 🔄 Zero-knowledge proof validation
-
-## 🔗 Technical Details
-
-**UTXO Input Format:** `(txid, vout, amount, scriptPubKey)` + ownership proof (signature over challenge)
-
-**Public Output:** Only aggregated BTC amount (no addresses/UTXOs revealed)
-
-**Verification:** Client-side proof verification for trustless validation
-
-## Roadmap ahead!
+## Roadmap ahead
 
 - [ ] Complete the end to end proving pipeline and verification flow
 - [ ] Add proving of ownership of UTXOs via signatures within the Cairo program
