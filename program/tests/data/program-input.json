@@ -1,0 +1,11 @@
+{
+  "single_page": true,
+  "tasks": [
+    {
+      "type": "Cairo1Executable",
+      "path": "/Users/michaelzaikin/zkpoor/program/target/release/zkpoor.executable.json",
+      "program_hash_function": "blake",
+      "user_args_file": "/Users/michaelzaikin/zkpoor/program/tests/data/args.json"
+    }
+  ]
+}
