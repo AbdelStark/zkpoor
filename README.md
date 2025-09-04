@@ -113,3 +113,10 @@ To stop either the development or production server, press `Ctrl+C` in the termi
 - [ ] Complete the end to end proving pipeline and verification flow
 - [ ] Add proving of ownership of UTXOs via signatures within the Cairo program
 - [ ] Optimize the Cairo program for performance and scalability
+  
+
+## Open questions
+
+- How to prevent someone to take a proof and reuse it later on to claim they own the same UTXOs?
+
+Potential solution would be that the manager add as additional input a public key, that will be also outputted in the proof, and then the verifier can ask the manager to sign a message with the corresponding private key to prove he originally generated the proof.
