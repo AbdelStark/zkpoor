@@ -14,7 +14,7 @@ full = ["cairo-vm", "stwo_cairo_prover", "stwo_cairo_utils"]
 wasm = []
 
 [dependencies]
-cairo-vm = { git = "https://github.com/lambdaclass/cairo-vm", rev = "b1a91f929b5fa29a1a2e9e6990a68a1220c0c673", features = [
+cairo-vm = { git = "https://github.com/m-kus/cairo-vm", rev = "75b90609f5d61a57c17e41d2930c6f5612bcd188", features = [
     "mod_builtin",
 ], default-features = false, optional = true }
 hex = "0.4.3"
@@ -24,9 +24,7 @@ serde_json = "1.0.134"
 serde-wasm-bindgen = "0.6.5"
 stwo_cairo_prover = { git = "https://github.com/starkware-libs/stwo-cairo.git", rev = "bbe3e469bc636b89c37cb385854447bd46277b3b", default-features = false, optional = true }
 stwo_cairo_utils = { git = "https://github.com/starkware-libs/stwo-cairo.git", rev = "bbe3e469bc636b89c37cb385854447bd46277b3b", default-features = false, optional = true }
-stwo = { git = "https://github.com/starkware-libs/stwo", rev = "d9176e6e22319370a8501f799829b920c0db2eac", features = [
-    "parallel",
-], default-features = false }
+
 
 thiserror-no-std = "2.0.2"
 wasm-bindgen = "0.2.84"

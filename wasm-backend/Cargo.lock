@@ -463,35 +463,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cairo-vm"
-version = "2.0.1"
-source = "git+https://github.com/lambdaclass/cairo-vm?rev=b1a91f929b5fa29a1a2e9e6990a68a1220c0c673#b1a91f929b5fa29a1a2e9e6990a68a1220c0c673"
-dependencies = [
- "anyhow",
- "bincode",
- "bitvec",
- "generic-array",
- "hashbrown 0.15.2",
- "hex",
- "indoc",
- "keccak",
- "lazy_static",
- "nom",
- "num-bigint",
- "num-integer",
- "num-traits",
- "rand",
- "rust_decimal",
- "serde",
- "serde_json",
- "sha2",
- "sha3",
- "starknet-crypto 0.7.3",
- "starknet-types-core",
- "thiserror 2.0.16",
-]
-
-[[package]]
 name = "cc"
 version = "1.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -826,12 +797,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fnv"
-version = "1.0.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
-
-[[package]]
 name = "foldhash"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -938,7 +903,6 @@ checksum = "f2481980430f9f78649238835720ddccc57e52df14ffce1c6f37391d61b563e9"
 dependencies = [
  "equivalent",
  "hashbrown 0.15.2",
- "rayon",
 ]
 
 [[package]]
@@ -1888,42 +1852,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
-name = "std-shims"
-version = "0.1.0"
-source = "git+https://github.com/starkware-libs/stwo?rev=d9176e6e22319370a8501f799829b920c0db2eac#d9176e6e22319370a8501f799829b920c0db2eac"
-
-[[package]]
 name = "strsim"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
-
-[[package]]
-name = "stwo"
-version = "0.1.1"
-source = "git+https://github.com/starkware-libs/stwo?rev=d9176e6e22319370a8501f799829b920c0db2eac#d9176e6e22319370a8501f799829b920c0db2eac"
-dependencies = [
- "blake2",
- "blake3",
- "bytemuck",
- "cfg-if",
- "educe",
- "fnv",
- "hashbrown 0.15.2",
- "hex",
- "indexmap",
- "itertools 0.12.1",
- "num-traits",
- "rand",
- "rayon",
- "serde",
- "starknet-crypto 0.6.2",
- "starknet-ff",
- "std-shims",
- "thiserror 2.0.16",
- "tracing",
- "tracing-subscriber",
-]
 
 [[package]]
 name = "stwo-air-utils"
@@ -1956,7 +1888,7 @@ dependencies = [
  "bincode",
  "bytemuck",
  "cairo-lang-casm",
- "cairo-vm 2.0.1 (git+https://github.com/m-kus/cairo-vm?rev=75b90609f5d61a57c17e41d2930c6f5612bcd188)",
+ "cairo-vm",
  "crypto-bigint",
  "dashmap",
  "itertools 0.12.1",
@@ -2061,7 +1993,7 @@ name = "stwo_cairo_utils"
 version = "0.1.0"
 source = "git+https://github.com/starkware-libs/stwo-cairo.git?rev=bbe3e469bc636b89c37cb385854447bd46277b3b#bbe3e469bc636b89c37cb385854447bd46277b3b"
 dependencies = [
- "cairo-vm 2.0.1 (git+https://github.com/m-kus/cairo-vm?rev=75b90609f5d61a57c17e41d2930c6f5612bcd188)",
+ "cairo-vm",
  "clap",
  "env_logger",
  "log",
@@ -2631,14 +2563,13 @@ name = "zkpoor-wasm-backend"
 version = "0.1.0"
 dependencies = [
  "bincode",
- "cairo-vm 2.0.1 (git+https://github.com/lambdaclass/cairo-vm?rev=b1a91f929b5fa29a1a2e9e6990a68a1220c0c673)",
+ "cairo-vm",
  "console_error_panic_hook",
  "hex",
  "js-sys",
  "serde",
  "serde-wasm-bindgen",
  "serde_json",
- "stwo",
  "stwo_cairo_prover",
  "stwo_cairo_utils",
  "thiserror 2.0.16",

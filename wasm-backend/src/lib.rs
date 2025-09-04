@@ -15,15 +15,15 @@ use cairo_vm::{
     },
 };
 use serde::{Deserialize, Serialize};
-use stwo::core::{
+use stwo_cairo_prover::{
+    air::{prove_cairo, verify_cairo, CairoProof, ProverConfig},
+    input::plain::adapt_finished_runner,
+};
+use stwo_cairo_utils::vm_utils::VmError;
+use stwo_prover::core::{
     prover::ProvingError,
     vcs::blake2_merkle::{Blake2sMerkleChannel, Blake2sMerkleHasher},
 };
-use stwo_cairo_prover::{
-    air::{prove_cairo, verify_cairo, CairoProof, ProverConfig},
-    input::{plain::adapt_finished_runner, ProverInput},
-};
-use stwo_cairo_utils::vm_utils::VmError;
 use utils::set_panic_hook;
 use wasm_bindgen::prelude::*;
 
@@ -75,41 +75,6 @@ pub fn from_zip_archive<R: std::io::Read + std::io::Seek>(
 }
 
 #[wasm_bindgen]
-pub fn run_trace_gen(program_content_js: JsValue) -> Result<JsValue, JsValue> {
-    set_panic_hook();
-
-    let input: Vec<u8> = serde_wasm_bindgen::from_value(program_content_js)?;
-    let reader = std::io::Cursor::new(input);
-    let zip_archive = zip::ZipArchive::new(reader).unwrap();
-
-    let pie = from_zip_archive(zip_archive)
-        .map_err(|e| JsValue::from(format!("Failed to deserialize pie: {e}")))?;
-    let trace_gen_output =
-        trace_gen(pie).map_err(|e| JsValue::from(format!("Failed to generate trace: {e}")))?;
-    Ok(serde_wasm_bindgen::to_value(&TraceGenOutputJS {
-        prover_input: serde_json::to_string(&trace_gen_output.prover_input)
-            .map_err(|e| JsValue::from(format!("Failed to serialize prover input: {e}")))?,
-        execution_resources: serde_json::to_string(&trace_gen_output.execution_resources)
-            .map_err(|e| JsValue::from(format!("Failed to serialize execution resources: {e}")))?,
-    })?)
-}
-
-#[wasm_bindgen]
-pub fn run_prove(prover_input_js: JsValue) -> Result<JsValue, JsValue> {
-    set_panic_hook();
-
-    let prover_input: ProverInput =
-        serde_json::from_str(&serde_wasm_bindgen::from_value::<String>(prover_input_js)?)
-            .map_err(|e| JsValue::from(format!("Failed to deserialize prover input: {e}")))?;
-    let proof =
-        prove(prover_input).map_err(|e| JsValue::from(format!("Failed to generate proof: {e}")))?;
-    Ok(serde_wasm_bindgen::to_value(
-        &serde_json::to_string(&proof)
-            .map_err(|e| JsValue::from(format!("Failed to serialize proof: {e}")))?,
-    )?)
-}
-
-#[wasm_bindgen]
 pub fn run_verify(proof_js: JsValue) -> Result<JsValue, JsValue> {
     set_panic_hook();
 
@@ -118,40 +83,6 @@ pub fn run_verify(proof_js: JsValue) -> Result<JsValue, JsValue> {
             .map_err(|e| JsValue::from(format!("Failed to deserialize proof: {e}")))?;
     let verdict = verify(proof);
     Ok(serde_wasm_bindgen::to_value(&verdict)?)
-}
-
-pub fn trace_gen(pie: CairoPie) -> Result<TraceGenOutput, VmError> {
-    let cairo_run_config = cairo_run::CairoRunConfig {
-        trace_enabled: true,
-        relocate_mem: true,
-        layout: LayoutName::all_cairo,
-        ..Default::default()
-    };
-
-    let mut hint_processor = BuiltinHintProcessor::new(
-        Default::default(),
-        RunResources::new(pie.execution_resources.n_steps),
-    );
-    let cairo_runner_result =
-        cairo_run::cairo_run_pie(&pie, &cairo_run_config, &mut hint_processor);
-
-    let cairo_runner = match cairo_runner_result {
-        Ok(runner) => runner,
-        Err(error) => {
-            return Err(VmError::Runner(error.to_string()));
-        }
-    };
-
-    Ok(TraceGenOutput {
-        execution_resources: cairo_runner
-            .get_execution_resources()
-            .map_err(|e| VmError::Runner(CairoRunError::Runner(e).to_string()))?,
-        prover_input: adapt_finished_runner(cairo_runner, false),
-    })
-}
-
-pub fn prove(prover_input: ProverInput) -> Result<CairoProof<Blake2sMerkleHasher>, ProvingError> {
-    prove_cairo::<Blake2sMerkleChannel>(prover_input, ProverConfig::default())
 }
 
 pub fn verify(cairo_proof: CairoProof<Blake2sMerkleHasher>) -> bool {
